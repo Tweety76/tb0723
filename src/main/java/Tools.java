@@ -1,3 +1,4 @@
+@SuppressWarnings("FieldCanBeLocal")
 public class Tools {
     public String tool_code;
     public String tool_type;
@@ -21,17 +22,13 @@ public class Tools {
     private final boolean CHAINSAW_HOLIDAY_CHARGE = true;
     private final boolean JACKHAMMER_HOLIDAY_CHARGE = false;
 
-    /**
-     *
-     * @param toolCode
-     * @throws Exception
-     */
+
     public Tools(String toolCode) throws Exception {
         if (toolCode.equalsIgnoreCase("CHNS")){
             tool_code = toolCode;
             tool_type = "Chainsaw";
             tool_brand = "Stihl";
-            daily_rental_charge = LADDER_DAILY_CHARGE;
+            daily_rental_charge = CHAINSAW_DAILY_CHARGE;
             weekday_charge = CHAINSAW_WEEKDAY_CHARGE;
             weekend_charge = CHAINSAW_WEEKEND_CHARGE;
             holiday_charge = CHAINSAW_HOLIDAY_CHARGE;
@@ -39,7 +36,7 @@ public class Tools {
             tool_code = toolCode;
             tool_type = "Ladder";
             tool_brand = "Werner";
-            daily_rental_charge = CHAINSAW_DAILY_CHARGE;
+            daily_rental_charge = LADDER_DAILY_CHARGE;
             weekday_charge = LADDER_WEEKDAY_CHARGE;
             weekend_charge = LADDER_WEEKEND_CHARGE;
             holiday_charge = LADDER_HOLIDAY_CHARGE;
@@ -63,21 +60,4 @@ public class Tools {
             throw new Exception("Invalid Tool Code");
         }
     }
-
-    //will probably remove the below code
-    /*public void setTool_code(String toolCode){
-        tool_code = toolCode;
-    }
-
-    public String getTool_code(){
-        return tool_code;
-    }
-
-    public void setTool_type(String toolType){
-        tool_type = toolType;
-    }
-
-    public String getTool_type(){
-        return tool_type;
-    }*/
 }
