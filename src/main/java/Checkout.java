@@ -61,7 +61,6 @@ public class Checkout {
         return count;
     }
 
-//add multiple years option
     public ArrayList<LocalDate> getHolidays(int checkOutYear, int dueDateYear){
         ArrayList<LocalDate> holidays = new ArrayList<>();
 
