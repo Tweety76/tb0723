@@ -1,5 +1,7 @@
+import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Checkout {
@@ -15,9 +17,13 @@ public class Checkout {
     Tools rental_tool;
 
 
-    public Checkout(String toolCode, int numRentalDays, int discountPercent, LocalDate checkOutDate) throws Exception {
-        tool_code = toolCode;
-        rental_tool = new Tools(tool_code);
+    public Checkout(String toolCode, int numRentalDays, int discountPercent, LocalDate checkOutDate) throws IllegalArgumentException {
+        if(numRentalDays < 1)
+            throw new IllegalArgumentException("The number of rental days cannot be less than 1");
+        if(discountPercent < 0 || discountPercent > 100)
+            throw new IllegalArgumentException("The discount percentage needs to be between 0 and 100");
+        rental_tool = new Tools(toolCode);
+        tool_code = rental_tool.tool_code;
         num_rental_days = numRentalDays;
         discount_percent = discountPercent;
         check_out_date = checkOutDate;
@@ -26,7 +32,7 @@ public class Checkout {
         pre_discount_charge_amount = calculatePreDiscountChargeAmount(rental_tool,num_charge_days);
         discount_amount = calculateDiscountAmount(pre_discount_charge_amount,discount_percent);
         final_charge_amount = calculateFinalChargeAmount(pre_discount_charge_amount, discount_amount);
-        printRentalAgreement();
+        //printRentalAgreement();
     }
 
 
@@ -38,8 +44,9 @@ public class Checkout {
     public int calculateNumChargeDays(LocalDate checkOutDate, LocalDate dueDate, Tools tool){
         int count = 0;
         LocalDate date = checkOutDate;
-        ArrayList<LocalDate> holidays = getHolidays(checkOutDate.getYear());
+        ArrayList<LocalDate> holidays = getHolidays(checkOutDate.getYear(),dueDate.getYear());
         while (date.isBefore(dueDate)){
+            date = date.plusDays(1);
             if(holidays.contains(date)){    //weekend check
                 if(tool.holiday_charge)
                     count++;
@@ -50,35 +57,36 @@ public class Checkout {
                 if(tool.weekday_charge)
                     count++;
             }
-            date = date.plusDays(1);
         }
         return count;
     }
 
-
-    public ArrayList<LocalDate> getHolidays(int year){
+//add multiple years option
+    public ArrayList<LocalDate> getHolidays(int checkOutYear, int dueDateYear){
         ArrayList<LocalDate> holidays = new ArrayList<>();
 
-        //Independence Day
-        LocalDate ind_day = LocalDate.of( year, 7, 4);
-        if(ind_day.getDayOfWeek().equals(DayOfWeek.SATURDAY)){
-            ind_day = ind_day.minusDays(1);
-        } else if (ind_day.getDayOfWeek().equals(DayOfWeek.SUNDAY)){
-            ind_day = ind_day.plusDays(1);
-        }
-        holidays.add(ind_day);
-
-
-        //Labor Day
-        LocalDate labor_day = LocalDate.of(year, 9, 1);
-       // for(int i = 0; i < 7; i++){
-        while(labor_day.getDayOfMonth() <= 7){
-            if(labor_day.getDayOfWeek().equals(DayOfWeek.MONDAY)){
-                break;
+        for(int i = checkOutYear;i<= dueDateYear;i++) {
+            //Independence Day
+            LocalDate ind_day = LocalDate.of(i, 7, 4);
+            if (ind_day.getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
+                ind_day = ind_day.minusDays(1);
+            } else if (ind_day.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+                ind_day = ind_day.plusDays(1);
             }
-            labor_day = labor_day.plusDays(1);
+            holidays.add(ind_day);
+
+
+            //Labor Day
+            LocalDate labor_day = LocalDate.of(i, 9, 1);
+            // for(int i = 0; i < 7; i++){
+            while (labor_day.getDayOfMonth() <= 7) {
+                if (labor_day.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
+                    break;
+                }
+                labor_day = labor_day.plusDays(1);
+            }
+            holidays.add(labor_day);
         }
-        holidays.add(labor_day);
 
         return holidays;
     }
@@ -106,19 +114,21 @@ public class Checkout {
 
 
     public void printRentalAgreement(){
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yy");
+        DecimalFormat decimalFormat = new DecimalFormat("#,###.00");
         String rental_agreement =
                 "Tool Code: " + tool_code +
                 "\nTool Type: " + rental_tool.tool_type +
                 "\nTool Brand: " + rental_tool.tool_brand +
                 "\nRental Days: " + num_rental_days + " Days" +
-                "\nCheck Out Date: " + check_out_date +
-                "\nDue Date: " + due_date +
-                "\nDaily Rental Charge: $" + rental_tool.daily_rental_charge + "/day" +
+                "\nCheck Out Date: " + check_out_date.format(dateTimeFormatter) +
+                "\nDue Date: " + due_date.format(dateTimeFormatter) +
+                "\nDaily Rental Charge: $" + decimalFormat.format(rental_tool.daily_rental_charge) + "/day" +
                 "\nCharge Days: " + num_charge_days + " Days" +
-                "\nPre-Discount Amount: $" + pre_discount_charge_amount +
+                "\nPre-Discount Amount: $" + decimalFormat.format(pre_discount_charge_amount) +
                 "\nDiscount Percent: " + discount_percent + "%" +
-                "\nDiscount Amount: $" + discount_amount +
-                "\nFinal Charge: $" + final_charge_amount;
+                "\nDiscount Amount: $" + decimalFormat.format(discount_amount) +
+                "\nFinal Charge: $" + decimalFormat.format(final_charge_amount);
 
         System.out.println(rental_agreement);
     }

@@ -10,22 +10,22 @@ public class Tools {
 
     //set finals for easy future changes
     private final double LADDER_DAILY_CHARGE = 1.99;
-    private final double CHAINSAW_DAILY_CHARGE = 1.49;
-    private final double JACKHAMMER_DAILY_CHARGE = 2.99;
     private final boolean LADDER_WEEKDAY_CHARGE = true;
-    private final boolean CHAINSAW_WEEKDAY_CHARGE = true;
-    private final boolean JACKHAMMER_WEEKDAY_CHARGE = true;
     private final boolean LADDER_WEEKEND_CHARGE = true;
-    private final boolean CHAINSAW_WEEKEND_CHARGE = false;
-    private final boolean JACKHAMMER_WEEKEND_CHARGE = false;
     private final boolean LADDER_HOLIDAY_CHARGE = false;
+    private final double CHAINSAW_DAILY_CHARGE = 1.49;
+    private final boolean CHAINSAW_WEEKDAY_CHARGE = true;
+    private final boolean CHAINSAW_WEEKEND_CHARGE = false;
     private final boolean CHAINSAW_HOLIDAY_CHARGE = true;
+    private final double JACKHAMMER_DAILY_CHARGE = 2.99;
+    private final boolean JACKHAMMER_WEEKDAY_CHARGE = true;
+    private final boolean JACKHAMMER_WEEKEND_CHARGE = false;
     private final boolean JACKHAMMER_HOLIDAY_CHARGE = false;
 
 
-    public Tools(String toolCode) throws Exception {
+    public Tools(String toolCode) throws IllegalArgumentException {
         if (toolCode.equalsIgnoreCase("CHNS")){
-            tool_code = toolCode;
+            tool_code = "CHNS";
             tool_type = "Chainsaw";
             tool_brand = "Stihl";
             daily_rental_charge = CHAINSAW_DAILY_CHARGE;
@@ -33,7 +33,7 @@ public class Tools {
             weekend_charge = CHAINSAW_WEEKEND_CHARGE;
             holiday_charge = CHAINSAW_HOLIDAY_CHARGE;
         } else if(toolCode.equalsIgnoreCase("LADW")){
-            tool_code = toolCode;
+            tool_code = "LADW";
             tool_type = "Ladder";
             tool_brand = "Werner";
             daily_rental_charge = LADDER_DAILY_CHARGE;
@@ -41,7 +41,7 @@ public class Tools {
             weekend_charge = LADDER_WEEKEND_CHARGE;
             holiday_charge = LADDER_HOLIDAY_CHARGE;
         } else if(toolCode.equalsIgnoreCase("JAKD")){
-            tool_code = toolCode;
+            tool_code = "JAKD";
             tool_type = "Jackhammer";
             tool_brand = "DeWalt";
             daily_rental_charge = JACKHAMMER_DAILY_CHARGE;
@@ -49,7 +49,7 @@ public class Tools {
             weekend_charge = JACKHAMMER_WEEKEND_CHARGE;
             holiday_charge = JACKHAMMER_HOLIDAY_CHARGE;
         } else if (toolCode.equalsIgnoreCase("JAKR")){
-            tool_code = toolCode;
+            tool_code = "JAKR";
             tool_type = "Jackhammer";
             tool_brand = "Ridgid";
             daily_rental_charge = JACKHAMMER_DAILY_CHARGE;
@@ -57,7 +57,7 @@ public class Tools {
             weekend_charge = JACKHAMMER_WEEKEND_CHARGE;
             holiday_charge = JACKHAMMER_HOLIDAY_CHARGE;
         } else{
-            throw new Exception("Invalid Tool Code");
+            throw new IllegalArgumentException("Invalid Tool Code");
         }
     }
 }
