@@ -29,7 +29,13 @@ public class Tools {
     private final boolean JACKHAMMER_WEEKEND_CHARGE = false;
     private final boolean JACKHAMMER_HOLIDAY_CHARGE = false;
 
-
+    /**
+     * Constructor for a tool rental
+     * Uses the tool code to populate the rest of the tools data
+     *
+     * @param toolCode Unique identifier to identify a tools type and brand
+     * @throws IllegalArgumentException Throws an exception if a tool code doesn't match any in the current list
+     */
     public Tools(String toolCode) throws IllegalArgumentException {
         if (toolCode.equalsIgnoreCase("CHNS")){
             tool_code = "CHNS";
