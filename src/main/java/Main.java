@@ -103,11 +103,13 @@ public class Main {
         }while (!isValid);
 
 
-
+        //print out Rental Agreement
         System.out.println("Thank you please wait while the Rental Agreement is generated\n");
         Checkout tool_rental = new Checkout(tool_code,num_rental_days,discount_percent,check_out_date);
         TimeUnit.SECONDS.sleep(2);
         tool_rental.printRentalAgreement();
+
+        //Final Statement
         System.out.println("\nPlease enjoy your " + tool_type + " for " + num_rental_days + " days.\n" +
                 "We will see you on " + tool_rental.due_date.format(DateTimeFormatter.ofPattern("MM/dd/yy")) + " for your return.");
     }

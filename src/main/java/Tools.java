@@ -1,9 +1,16 @@
+/**
+ * This class creates an instance of a tool for a hardware store. Details about the tool include the following:
+ * Tool Code, Tool Type, Tool Brand, Daily Rental Charge, if there is a weekday charge, if there is a weekend charge, if there is a holiday charge
+ *
+ * @author Ty Bird
+ * @since 2023-07-11
+ */
 @SuppressWarnings("FieldCanBeLocal")
 public class Tools {
     public String tool_code;
     public String tool_type;
     public String tool_brand;
-    public double daily_rental_charge;  //daily charge for renting the item
+    public double daily_rental_charge;
     public boolean weekday_charge;
     public boolean weekend_charge;
     public boolean holiday_charge;

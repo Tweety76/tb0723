@@ -1,3 +1,10 @@
+/**
+ * This class creates a rental agreement for a tool. The available tools are in Tools.java.
+ *
+ * @author Ty Bird
+ * @since 2023-07-11
+ */
+
 import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -16,7 +23,15 @@ public class Checkout {
     public double final_charge_amount;  //final amount charged to customer
     Tools rental_tool;
 
-
+    /**
+     * Constructor for the Checkout class that generates a rental agreement for a tool
+     * @param toolCode Tool Code for the tool being rented
+     * @param numRentalDays Number of days the tool is being rented
+     * @param discountPercent Amount of discount being applied to the final charge amount. Represented as a percentage e.g.20%
+     * @param checkOutDate The date that the tool is being checked out on
+     * @throws IllegalArgumentException Throws exception if the number of rental days is less than 1
+     * @throws IllegalArgumentException Throws exception if the discount percent is not between 0-100
+     */
     public Checkout(String toolCode, int numRentalDays, int discountPercent, LocalDate checkOutDate) throws IllegalArgumentException {
         if(numRentalDays < 1)
             throw new IllegalArgumentException("The number of rental days cannot be less than 1");
@@ -32,15 +47,25 @@ public class Checkout {
         pre_discount_charge_amount = calculatePreDiscountChargeAmount(rental_tool,num_charge_days);
         discount_amount = calculateDiscountAmount(pre_discount_charge_amount,discount_percent);
         final_charge_amount = calculateFinalChargeAmount(pre_discount_charge_amount, discount_amount);
-        //printRentalAgreement();
     }
 
-
+    /**
+     * Method to calculate the date that a tool is due to be returned
+     * @param checkOutDate the date the tool is rented
+     * @param numRentalDays the number of days the tool is rented
+     * @return LocalDate Returns the date the tool needs to be returned
+     */
     public LocalDate calculateDueDate(LocalDate checkOutDate, int numRentalDays){
         return checkOutDate.plusDays(numRentalDays);
     }
 
-
+    /**
+     * Tools are not charged every day. Some tools are free on weekends and some are free on holidays. This method calculates the number of days a tool
+     * @param checkOutDate the date the tool is rented
+     * @param dueDate the date the tool needs to be returned
+     * @param tool reference to the tool being rented
+     * @return int Returns the number of days that the customer will be charged
+     */
     public int calculateNumChargeDays(LocalDate checkOutDate, LocalDate dueDate, Tools tool){
         int count = 0;
         LocalDate date = checkOutDate;
@@ -61,6 +86,14 @@ public class Checkout {
         return count;
     }
 
+    /**
+     * Tools are not charged every day. Some tools are free on weekends and some are free on holidays. This method finds the list of valid holidays that some tools will not be charged on
+     * I have added the return due date year in case of an extended rental period since no limits were placed on length of rental.
+     * Current list of holidays includes Independence day which will be observed on the closest weekday if it falls on the weekend and Labor day
+     * @param checkOutYear this is the year field from the date of check out
+     * @param dueDateYear This is the year field from the date of return
+     * @return ArrayList<LocalDate> Returns a list of holiday dates
+     */
     public ArrayList<LocalDate> getHolidays(int checkOutYear, int dueDateYear){
         ArrayList<LocalDate> holidays = new ArrayList<>();
 
@@ -90,28 +123,49 @@ public class Checkout {
         return holidays;
     }
 
-
+    /**
+     * Method to calculate the charge amount before any discount is applied
+     * daily rate * number of charge days
+     * @param tools reference to the tool being rented
+     * @param numChargeDays the number of days that the customer will be charged
+     * @return double the charge amount before any discount is applied rounded up a half penny
+     */
     public double calculatePreDiscountChargeAmount(Tools tools, int numChargeDays){
         double pre_discount_charge_amount = tools.daily_rental_charge * numChargeDays;
         pre_discount_charge_amount = Math.floor((pre_discount_charge_amount*100)+.5)/100; //round up and leave only 2 decimal points
         return pre_discount_charge_amount;
     }
 
-
+    /**
+     * Method to calculate the amount discounted from the final charge
+     * pre discount amount * discount percentage
+     * @param preDiscountChargeAmount the charge amount before any discount is applied rounded
+     * @param discountPercent The percent discounted from the final charge
+     * @return double The amount discounted from final charge
+     */
     public double calculateDiscountAmount(double preDiscountChargeAmount, int discountPercent){
         double discount_amount = preDiscountChargeAmount * (discountPercent/100.0);
         discount_amount = Math.floor((discount_amount*100)+.5)/100; //round up and leave only 2 decimal points
         return discount_amount;
     }
 
-
+    /**
+     * Method to calculate the final charge amount after the discount
+     * pre discount charge amount - discount amount
+     * @param preDiscountChargeAmount The charge amount before any discount is applied rounded
+     * @param discountAmount The amount discounted from final charge
+     * @return double The final charge amount rounded up half a penny
+     */
     public double calculateFinalChargeAmount(double preDiscountChargeAmount, double discountAmount){
         double final_charge_amount = preDiscountChargeAmount - discountAmount;
         final_charge_amount = Math.floor((final_charge_amount*100)+.5)/100; //round up and leave only 2 decimal points
         return final_charge_amount;
     }
 
-
+    /**
+     * Method to print the Rental Agreement with all the below items:
+     * Tool Code, Tool Type, Tool Brand, Rental Days, Check Out Date, Due Date, Daily Rental Charge, Charge Days, Pre-Discount Amount, Discount Percent, Discount Amount, Final Charge
+     */
     public void printRentalAgreement(){
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yy");
         DecimalFormat decimalFormat = new DecimalFormat("#,###.00");
