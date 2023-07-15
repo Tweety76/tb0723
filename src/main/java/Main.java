@@ -6,6 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
+        //break the do/while into seperate methods
+
         Scanner kb = new Scanner(System.in);
         String[][] available_tools = {
                 {"Tool Code","Tool Type","Brand"},

@@ -12,15 +12,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Checkout {
-    public String tool_code;
-    public int num_rental_days;
-    public LocalDate check_out_date;
-    public LocalDate due_date;
-    public int num_charge_days; //the number of days the item is being charged
-    public double pre_discount_charge_amount;
-    public int discount_percent;
-    public double discount_amount;
-    public double final_charge_amount;  //final amount charged to customer
+    protected String tool_code;
+    protected int num_rental_days;
+    protected LocalDate check_out_date;
+    protected LocalDate due_date;
+    protected int num_charge_days; //the number of days the item is being charged
+    protected double pre_discount_charge_amount;
+    protected int discount_percent;
+    protected double discount_amount;
+    protected double final_charge_amount;  //final amount charged to customer
     Tools rental_tool;
 
     /**
@@ -32,7 +32,7 @@ public class Checkout {
      * @throws IllegalArgumentException Throws exception if the number of rental days is less than 1
      * @throws IllegalArgumentException Throws exception if the discount percent is not between 0-100
      */
-    public Checkout(String toolCode, int numRentalDays, int discountPercent, LocalDate checkOutDate) throws IllegalArgumentException {
+    protected Checkout(String toolCode, int numRentalDays, int discountPercent, LocalDate checkOutDate) throws IllegalArgumentException {
         if(numRentalDays < 1)
             throw new IllegalArgumentException("The number of rental days cannot be less than 1");
         if(discountPercent < 0 || discountPercent > 100)
@@ -66,7 +66,7 @@ public class Checkout {
      * @param tool reference to the tool being rented
      * @return int Returns the number of days that the customer will be charged
      */
-    public int calculateNumChargeDays(LocalDate checkOutDate, LocalDate dueDate, Tools tool){
+    private int calculateNumChargeDays(LocalDate checkOutDate, LocalDate dueDate, Tools tool){
         int count = 0;
         LocalDate date = checkOutDate;
         ArrayList<LocalDate> holidays = getHolidays(checkOutDate.getYear(),dueDate.getYear());
@@ -94,7 +94,7 @@ public class Checkout {
      * @param dueDateYear This is the year field from the date of return
      * @return ArrayList<LocalDate> Returns a list of holiday dates
      */
-    public ArrayList<LocalDate> getHolidays(int checkOutYear, int dueDateYear){
+    protected ArrayList<LocalDate> getHolidays(int checkOutYear, int dueDateYear){
         ArrayList<LocalDate> holidays = new ArrayList<>();
 
         for(int i = checkOutYear;i<= dueDateYear;i++) {
@@ -130,7 +130,7 @@ public class Checkout {
      * @param numChargeDays the number of days that the customer will be charged
      * @return double the charge amount before any discount is applied rounded up a half penny
      */
-    public double calculatePreDiscountChargeAmount(Tools tools, int numChargeDays){
+    private double calculatePreDiscountChargeAmount(Tools tools, int numChargeDays){
         double pre_discount_charge_amount = tools.daily_rental_charge * numChargeDays;
         pre_discount_charge_amount = Math.floor((pre_discount_charge_amount*100)+.5)/100; //round up and leave only 2 decimal points
         return pre_discount_charge_amount;
@@ -143,7 +143,7 @@ public class Checkout {
      * @param discountPercent The percent discounted from the final charge
      * @return double The amount discounted from final charge
      */
-    public double calculateDiscountAmount(double preDiscountChargeAmount, int discountPercent){
+    private double calculateDiscountAmount(double preDiscountChargeAmount, int discountPercent){
         double discount_amount = preDiscountChargeAmount * (discountPercent/100.0);
         discount_amount = Math.floor((discount_amount*100)+.5)/100; //round up and leave only 2 decimal points
         return discount_amount;
@@ -156,7 +156,7 @@ public class Checkout {
      * @param discountAmount The amount discounted from final charge
      * @return double The final charge amount rounded up half a penny
      */
-    public double calculateFinalChargeAmount(double preDiscountChargeAmount, double discountAmount){
+    private double calculateFinalChargeAmount(double preDiscountChargeAmount, double discountAmount){
         double final_charge_amount = preDiscountChargeAmount - discountAmount;
         final_charge_amount = Math.floor((final_charge_amount*100)+.5)/100; //round up and leave only 2 decimal points
         return final_charge_amount;
@@ -166,7 +166,7 @@ public class Checkout {
      * Method to print the Rental Agreement with all the below items:
      * Tool Code, Tool Type, Tool Brand, Rental Days, Check Out Date, Due Date, Daily Rental Charge, Charge Days, Pre-Discount Amount, Discount Percent, Discount Amount, Final Charge
      */
-    public void printRentalAgreement(){
+    protected void printRentalAgreement(){
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yy");
         DecimalFormat decimalFormat = new DecimalFormat("#,###.00");
         String rental_agreement =
